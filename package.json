@@ -27,7 +27,7 @@
         "url": "https://github.com/bttrs-org/node-internals/issues"
     },
     "engines": {
-        "node": ">=14"
+        "node": ">=16"
     },
     "homepage": "https://github.com/bttrs-org/node-internals",
     "license": "MIT"

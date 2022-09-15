@@ -1,0 +1,34 @@
+{
+    "name": "node-internals",
+    "version": "1.0.0",
+    "description": "Easily include node_modules in Webpack bundle",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bttrs-org/node-internals.git"
+    },
+    "dependencies": {},
+    "devDependencies": {},
+    "keywords": [
+        "webpack",
+        "node_modules",
+        "node",
+        "bundle",
+        "externals",
+        "internals"
+    ],
+    "author": "bttrs.org",
+    "files": [
+        "LICENSE",
+        "README.md",
+        "index.js"
+    ],
+    "bugs": {
+        "url": "https://github.com/bttrs-org/node-internals/issues"
+    },
+    "engines": {
+        "node": ">=14"
+    },
+    "homepage": "https://github.com/bttrs-org/node-internals",
+    "license": "MIT"
+}

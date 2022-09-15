@@ -9,7 +9,7 @@ function getDependencyModules() {
     const modules = [];
 
     const lockFilePath = path.join(process.cwd(), 'package-lock.json');
-    const lockFile = fs.readFileSync(lockFilePath).toJSON();
+    const lockFile = JSON.parse(fs.readFileSync(lockFilePath).toString());
 
     for (const pkg of Object.keys(lockFile.packages)) {
         if (pkg.startsWith('node_modules')
@@ -23,10 +23,14 @@ function getDependencyModules() {
     return modules;
 }
 
-function nodeExternals(extraModules = []) {
+/**
+ *
+ */
+function nodeInternals() {
     const moduleRegexp = new RegExp('(node_modules(?:[/\\\\][\\w\\-@.]+)+)', 'g');
     const bsRegexp = new RegExp('\\\\', 'g');
-    const availableModules = [...extraModules.map(e => `node_modules/${e}`), ...getDependencyModules()];
+    // const availableModules = [...extraModules.map(e => `node_modules/${e}`), ...getDependencyModules()];
+    const availableModules = [...getDependencyModules()];
 
     function getModuleName(context, request) {
         if (request.startsWith('.')) {
@@ -99,4 +103,4 @@ function nodeExternals(extraModules = []) {
     };
 }
 
-module.exports.nodeExternals = nodeExternals;
+module.exports.nodeInternals = nodeInternals;

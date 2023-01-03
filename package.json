@@ -1,14 +1,8 @@
 {
-    "name": "node-internals",
-    "version": "1.0.0",
-    "description": "Easily include node_modules in Webpack bundle",
-    "main": "index.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/bttrs-org/node-internals.git"
-    },
-    "dependencies": {},
-    "devDependencies": {},
+    "name": "webpack-node-internals",
+    "version": "0.0.1",
+    "description": "Easily include node_modules in a Webpack bundle.",
+    "author": "bttrs.org <bttrs@bttrs.org>",
     "keywords": [
         "webpack",
         "node_modules",
@@ -17,18 +11,35 @@
         "externals",
         "internals"
     ],
-    "author": "bttrs.org",
-    "files": [
-        "LICENSE",
-        "README.md",
-        "index.js"
-    ],
+    "license": "MIT",
+    "homepage": "https://github.com/bttrs-org/webpack-node-internals/#readme",
     "bugs": {
-        "url": "https://github.com/bttrs-org/node-internals/issues"
+        "url": "https://github.com/bttrs-org/webpack-node-internals/issues"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bttrs-org/webpack-node-internals.git"
+    },
+    "files": [
+        "dist/*"
+    ],
     "engines": {
         "node": ">=16"
     },
-    "homepage": "https://github.com/bttrs-org/node-internals",
-    "license": "MIT"
+    "main": "dist/index.js",
+    "scripts": {
+        "clean": "rimraf dist",
+        "build": "npm run clean && tsc",
+        "start": "tsc --watch"
+    },
+    "devDependencies": {
+        "@types/node": "^18.11.18",
+        "@types/webpack": "^5.28.0",
+        "prettier": "^2.8.1",
+        "rimraf": "^3.0.2",
+        "typescript": "^4.9.4"
+    },
+    "peerDependencies": {
+        "webpack": "^5.0.0"
+    }
 }

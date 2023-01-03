@@ -1,0 +1,17 @@
+{
+    "include": ["./src/**/*.ts", "node_modules/webpack/types.d.ts"],
+    "exclude": ["./src/**/*.test.ts"],
+    "compileOnSave": true,
+    "compilerOptions": {
+        "outDir": "./dist",
+        "module": "CommonJS",
+        "target": "ES2020",
+        "skipLibCheck": true,
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "preserveConstEnums": true,
+        "declaration": true,
+        "sourceMap": false
+    }
+}

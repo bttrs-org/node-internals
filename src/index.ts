@@ -1,21 +1,24 @@
-const path = require('path');
-const fs = require('fs');
+import path from 'node:path';
+import fs from 'node:fs';
+import { Configuration } from 'webpack';
 
-function longestString(arr) {
-    return arr.reduce((prev, current) => prev.length < current.length ? current : prev, '');
+function longestString(arr: string[]): string {
+    return arr.reduce((prev, current) => (prev.length < current.length ? current : prev), '');
 }
 
-function getDependencyModules() {
+function getDependencyModules(): string[] {
     const modules = [];
 
     const lockFilePath = path.join(process.cwd(), 'package-lock.json');
     const lockFile = JSON.parse(fs.readFileSync(lockFilePath).toString());
 
     for (const pkg of Object.keys(lockFile.packages)) {
-        if (pkg.startsWith('node_modules')
-            && !lockFile.packages[pkg].dev
-            && !lockFile.packages[pkg].devOptional
-            && modules.indexOf(pkg) === -1) {
+        if (
+            pkg.startsWith('node_modules') &&
+            !lockFile.packages[pkg].dev &&
+            !lockFile.packages[pkg].devOptional &&
+            modules.indexOf(pkg) === -1
+        ) {
             modules.push(pkg);
         }
     }
@@ -23,20 +26,16 @@ function getDependencyModules() {
     return modules;
 }
 
-/**
- *
- */
-function nodeInternals() {
+export default function nodeInternals(): Configuration['externals'] {
     const moduleRegexp = new RegExp('(node_modules(?:[/\\\\][\\w\\-@.]+)+)', 'g');
     const bsRegexp = new RegExp('\\\\', 'g');
     // const availableModules = [...extraModules.map(e => `node_modules/${e}`), ...getDependencyModules()];
     const availableModules = [...getDependencyModules()];
 
-    function getModuleName(context, request) {
+    function getModuleName(context: string, request: string) {
         if (request.startsWith('.')) {
-            const modulePath = context.match(moduleRegexp)[0].replace(bsRegexp, '/');
-            const moduleCandidates = availableModules
-                .filter((m) => modulePath.startsWith(m));
+            const modulePath = context.match(moduleRegexp)?.[0]?.replace(bsRegexp, '/') ?? '';
+            const moduleCandidates = availableModules.filter((m) => modulePath.startsWith(m));
 
             return longestString(moduleCandidates) || null;
         }
@@ -44,9 +43,9 @@ function nodeInternals() {
 
         // find module candidates matching request. Could be nested in another module
         const requestParts = request.split('/');
-        let moduleCandidates = [];
+        let moduleCandidates: string[] = [];
         while (!moduleCandidates.length && requestParts.length) {
-            moduleCandidates = availableModules.filter(x => x.endsWith(`node_modules/${requestParts.join('/')}`));
+            moduleCandidates = availableModules.filter((x) => x.endsWith(`node_modules/${requestParts.join('/')}`));
             requestParts.pop();
         }
 
@@ -55,7 +54,7 @@ function nodeInternals() {
         }
 
         // find candidates that match context to find nested dependency
-        const contextParts = context.match(moduleRegexp)[0].replace(bsRegexp, '/').split('/');
+        const contextParts = context.match(moduleRegexp)?.[0]?.replace(bsRegexp, '/').split('/') ?? '';
 
         let bestCandidateContextMatchLength = 0;
         let bestCandidateContextMatch = '';
@@ -85,16 +84,16 @@ function nodeInternals() {
     }
 
     return function ({ context, request }, callback) {
-        if (context.indexOf('node_modules') === -1) {
+        if ((context ?? '').indexOf('node_modules') === -1) {
             callback();
             return;
         }
 
-        const moduleName = getModuleName(context, request);
+        const moduleName = getModuleName(context ?? '', request ?? '');
 
         if (!moduleName) {
             // Externalize to a commonjs module using the request path
-            callback(null, 'commonjs ' + request);
+            callback(undefined, 'commonjs ' + request);
             return;
         }
 
@@ -102,5 +101,3 @@ function nodeInternals() {
         callback();
     };
 }
-
-module.exports.nodeInternals = nodeInternals;
